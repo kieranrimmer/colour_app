@@ -102,7 +102,9 @@ body {
 }
 
 .colour-chart-row {
-  display: inline-flex;
+  /*display: inline-flex;*/
+  display: flex;
+  height: 12px;
 }
 
 .colour-display-row {
