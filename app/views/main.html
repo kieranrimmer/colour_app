@@ -12,7 +12,9 @@
 <div class="row colour-display-row">
 
 <div class="row colour-chart-row">
- <div ng-repeat="colour in colours.slice(0,80)" class="colour-square" ng-click="scrollToColour(colour)" ng-style="{ 'background-color' :  colour.hex, 'height' : '12px', 'width' : '12px' }"></div> 
+ <div class="click-square" ng-repeat="colour in colours.slice(0,80)" ng-click="scrollToColour(colour)">
+  <div class="colour-square" ng-style="{ 'background-color' :  colour.hex, 'height' : '12px', 'width' : '12px' }"></div> 
+</div>
 
 </div>
 

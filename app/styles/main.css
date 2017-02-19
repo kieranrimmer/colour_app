@@ -118,3 +118,11 @@ body {
 .colour-square:hover {
   cursor: pointer;
 }
+
+.square-anchor:hover {
+  cursor: pointer;
+}
+
+.click-square:hover {
+  cursor: pointer;
+}
