@@ -21,7 +21,7 @@ angular.module('colourappApp')
 
 
     $scope.getGoogleCheck = function() {
-            asyncService.getGoogleCheckRecursive()
+            asyncService.getGoogleCheck($scope.response)
                 .then(
                 function success(response) {
                     console.log('success triggered');
@@ -39,47 +39,32 @@ angular.module('colourappApp')
     .factory('asyncService', function ($http, $q, $log) {
         var counter = 0;
 
-        function getGoogleCheckRecursive() {
-            var deferred = $q.defer();
-            $http.get('http://www.google.com', {}).then(
-                function success(response) {
-                    deferred.resolve(response);
-                    return deferred.promise;
-                },
-                function failure(error) {
-                    console.log('counter = ' + counter + ', error = ' + JSON.stringify(error,null,2));
-                    if(counter < 2) {
-                        counter++;
-                        return getGoogleCheck();
-                    }
-                    else {
-                        console.log('counter = ' + counter + ', rejecting error = ' + JSON.stringify(error,null,2));
-                        deferred.reject(error);
-                        return deferred.promise;
-                    }
-                }
-            );
-            return deferred.promise;
-        }
-
         function getGoogleCheck(bodyToPopulate) {
+            console.log('bodyToPopulate = ' + JSON.stringify(bodyToPopulate,null,2));
             var deferred = $q.defer();
             $http.get('http://www.google.com', {}).then(
                 function success(response) {
-                    bodyToPopulate = response;
+                    bodyToPopulate.body = response;
                     deferred.resolve(response);
                 },
                 function failure(error) {
-                    bodyToPopulate = error;
-                    console.log('counter = ' + counter + ', error = ' + JSON.stringify(error,null,2));
-                    if(counter < 2) {
-                        counter++;
-                        return getGoogleCheck();
-                    }
-                    else {
-                        console.log('counter = ' + counter + ', rejecting error = ' + JSON.stringify(error,null,2));
-                        deferred.reject(error);
-                    }
+                    bodyToPopulate.body = error;
+                    $http.get('http://www.abc.net.au', {}).then(function success(scsMsg) {
+                            bodyToPopulate.body = scsMsg;
+                            deferred.resolve(response);
+                        },
+                        function failure(errorMsg) {
+                            bodyToPopulate.body = errorMsg;
+                            console.log('counter = ' + counter + ', error = ' + JSON.stringify(errorMsg, null, 2));
+                            if (counter < 2) {
+                                counter++;
+                                return getGoogleCheck(bodyToPopulate);
+                            }
+                            else {
+                                console.log('counter = ' + counter + ', rejecting error = ' + JSON.stringify(errorMsg, null, 2));
+                                deferred.reject(errorMsg);
+                            }
+                        });
                 }
             );
             return deferred.promise;
@@ -87,7 +72,6 @@ angular.module('colourappApp')
 
 
         return {
-            getGoogleCheckRecursive: getGoogleCheckRecursive,
             getGoogleCheck: getGoogleCheck
         };
     });
